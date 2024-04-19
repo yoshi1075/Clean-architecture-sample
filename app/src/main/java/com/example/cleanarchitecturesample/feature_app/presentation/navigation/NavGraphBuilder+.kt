@@ -116,6 +116,13 @@ fun NavGraphBuilder.appContentsRoute(
                         ) {
                             Text("popBack")
                         }
+                        Button(
+                            onClick = {
+                                navController.navigate("product/${(0..100).random()}")
+                            }
+                        ) {
+                            Text("Next Product")
+                        }
                     }
                 }
             }
