@@ -2,6 +2,9 @@ package com.example.cleanarchitecturesample.feature_app.presentation.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -13,7 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import kotlin.random.Random
 
 fun NavGraphBuilder.splashScreen(navigateToAuthRoute: () -> Unit) {
     composable(route = NavDestination.Splash.route) {
@@ -82,8 +84,20 @@ fun NavGraphBuilder.appContentsRoute(
         route = NavDestination.AppRoute.route,
     ) {
         val navController = rememberNavController()
+        val bottomBarItems = listOf(
+            BottomBarItem(
+                NavDestination.ProductList.route,
+                "Product",
+                Icons.Filled.ShoppingCart,
+            ),
+            BottomBarItem(
+                NavDestination.StatisticsGraph.route,
+                "Statistics",
+                Icons.Filled.Search,
+            ),
+        )
         Scaffold(
-            bottomBar = { BottomNavBar(navController) }
+            bottomBar = { BottomNavBar(bottomBarItems, navController) }
         ) {
             NavHost(
                 navController = navController,
@@ -92,7 +106,7 @@ fun NavGraphBuilder.appContentsRoute(
             ) {
                 composable(NavDestination.ProductList.route) {
                     Column {
-                        val productId = 100
+                        val productId = (0..100).random()
                         Text("商品一覧")
                         Button(
                             onClick = { navController.navigate("product/$productId") }
@@ -101,7 +115,7 @@ fun NavGraphBuilder.appContentsRoute(
                         }
                     }
                 }
-                statisticsGraph { navController.navigate(NavDestination.ProductList.route) }
+                statisticsGraph { navController.navigate("product/${(0..100).random()}") }
                 composable(
                     NavDestination.Product().route,
                     listOf(
@@ -130,9 +144,7 @@ fun NavGraphBuilder.appContentsRoute(
     }
 }
 
-fun NavGraphBuilder.statisticsGraph(
-    navigateToProductList: () -> Unit
-) {
+fun NavGraphBuilder.statisticsGraph(navigateToProduct: () -> Unit) {
     navigation(
         route = NavDestination.StatisticsGraph.route,
         startDestination = NavDestination.StatisticsUser.route,
@@ -141,9 +153,9 @@ fun NavGraphBuilder.statisticsGraph(
             Column {
                 Text("個人統計")
                 Button(
-                    onClick = {  }
+                    onClick = { navigateToProduct() }
                 ) {
-                    Text("")
+                    Text("Go To Product")
                 }
             }
         }
@@ -151,9 +163,9 @@ fun NavGraphBuilder.statisticsGraph(
             Column {
                 Text("全体統計")
                 Button(
-                    onClick = {  }
+                    onClick = { navigateToProduct() }
                 ) {
-                    Text("")
+                    Text("Go To Product")
                 }
             }
         }
