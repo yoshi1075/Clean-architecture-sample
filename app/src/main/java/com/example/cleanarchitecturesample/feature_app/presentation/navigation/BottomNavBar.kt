@@ -1,40 +1,31 @@
 package com.example.cleanarchitecturesample.feature_app.presentation.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 
 @Composable
 fun BottomNavBar(
-    navController: NavController
+    bottomBarItems: List<BottomBarItem>,
+    navController: NavController,
 ) {
-    val items = listOf(
-        BottomBarItem(
-            NavDestination.ProductList.route,
-            "Product",
-            Icons.Filled.ShoppingCart,
-        ),
-        BottomBarItem(
-            NavDestination.StatisticsGraph.route,
-            "Statistics",
-            Icons.Filled.Search,
-        ),
-    )
+    var selectedIndex by rememberSaveable {
+        mutableIntStateOf(0)
+    }
 
     NavigationBar {
-        items.forEachIndexed { index, bottomBarItem ->
+        bottomBarItems.forEachIndexed { index, bottomBarItem ->
             NavigationBarItem(
-                selected = navController.currentDestination?.hierarchy?.any {
-                    it.route == bottomBarItem.route
-                } ?: false,
+                selected = index == selectedIndex,
                 onClick = {
+                    selectedIndex = index
                     navController.navigate(bottomBarItem.route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
