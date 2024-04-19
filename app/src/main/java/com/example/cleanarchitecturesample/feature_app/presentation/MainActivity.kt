@@ -15,9 +15,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            val isLoggedIn = true
+            val startDestination = if (isLoggedIn) {
+                NavDestination.AppRoute.route
+            } else {
+                NavDestination.Splash.route
+            }
             NavHost(
                 navController = navController,
-                startDestination = NavDestination.Splash.route,
+                startDestination = startDestination,
             ) {
                 splashScreen { navController.navigate(NavDestination.AuthGraph.route) }
                 authGraph(
