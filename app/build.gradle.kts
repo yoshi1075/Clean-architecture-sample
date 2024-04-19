@@ -1,16 +1,18 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.daggerHilt)
+    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.cleanarchitecturesample"
-    compileSdk = 34
+    compileSdk = libs.versions.app.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.example.cleanarchitecturesample"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = libs.versions.app.minSdk.get().toInt()
+        targetSdk = libs.versions.app.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -34,18 +36,22 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = libs.versions.kotlin.jvmTarget.get()
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = libs.versions.compose.kotlin.compiler.get()
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+    // Allow references to generated code
+    kapt {
+        correctErrorTypes = true
     }
 }
 
@@ -66,4 +72,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // DI
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 }
