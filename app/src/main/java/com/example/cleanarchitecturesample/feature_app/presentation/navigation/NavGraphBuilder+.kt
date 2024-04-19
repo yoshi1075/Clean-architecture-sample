@@ -1,8 +1,11 @@
 package com.example.cleanarchitecturesample.feature_app.presentation.navigation
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import kotlin.random.Random
 
 fun NavGraphBuilder.splashScreen(navigateToAuthRoute: () -> Unit) {
     composable(route = NavDestination.Splash.route) {
@@ -77,36 +81,41 @@ fun NavGraphBuilder.appContentsRoute(
     composable(
         route = NavDestination.AppRoute.route,
     ) {
-        val navController2 = rememberNavController()
-        NavHost(
-            navController = navController2,
-            startDestination = NavDestination.ProductList.route,
+        val navController = rememberNavController()
+        Scaffold(
+            bottomBar = { BottomNavBar(navController) }
         ) {
-            composable(NavDestination.ProductList.route) {
-                Column {
-                    val productId = 100
-                    Text("商品一覧")
-                    Button(
-                        onClick = { navController2.navigate("product/$productId") }
-                    ) {
-                        Text("Go To Product")
+            NavHost(
+                navController = navController,
+                startDestination = NavDestination.ProductList.route,
+                modifier = Modifier.padding(it),
+            ) {
+                composable(NavDestination.ProductList.route) {
+                    Column {
+                        val productId = 100
+                        Text("商品一覧")
+                        Button(
+                            onClick = { navController.navigate("product/$productId") }
+                        ) {
+                            Text("Go To Product")
+                        }
                     }
                 }
-            }
-            statisticsGraph { navController2.navigate(NavDestination.ProductList.route) }
-            composable(
-                NavDestination.Product().route,
-                listOf(
-                    navArgument(NavDestination.Product().key) { type = NavType.StringType }
-                ),
-            ) {
-                val productId = it.arguments?.getString(NavDestination.Product().key)
-                Column {
-                    Text("商品 - productId: $productId")
-                    Button(
-                        onClick = { navController2.popBackStack() }
-                    ) {
-                        Text("popBack")
+                statisticsGraph { navController.navigate(NavDestination.ProductList.route) }
+                composable(
+                    NavDestination.Product().route,
+                    listOf(
+                        navArgument(NavDestination.Product().key) { type = NavType.StringType }
+                    ),
+                ) {
+                    val productId = it.arguments?.getString(NavDestination.Product().key)
+                    Column {
+                        Text("商品 - productId: $productId")
+                        Button(
+                            onClick = { navController.popBackStack() }
+                        ) {
+                            Text("popBack")
+                        }
                     }
                 }
             }
