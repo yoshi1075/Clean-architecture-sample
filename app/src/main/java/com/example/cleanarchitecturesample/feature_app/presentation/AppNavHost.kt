@@ -9,7 +9,7 @@ import com.example.cleanarchitecturesample.feature_app.presentation.screens.auth
 import com.example.cleanarchitecturesample.feature_app.presentation.screens.splash_screen.splashRoute
 
 @Composable
-fun EquipmentApp() {
+fun AppNavHost() {
     val navController = rememberNavController()
     val isLoggedIn = true
     val startDestination = if (isLoggedIn) {
